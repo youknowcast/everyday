@@ -2,13 +2,13 @@ defmodule EverydayApp.Training do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias EverydayApp.User
+  alias EverydayApp.Calendar
 
   schema "trainings" do
     field :title, :string
     field :current, :integer
     field :expect, :integer
-    belongs_to :user, User, foreign_key: :user_id, references: :id
+    belongs_to :calendar, Calendar, foreign_key: :calendar_id, references: :id
 
     timestamps()
   end
@@ -16,7 +16,7 @@ defmodule EverydayApp.Training do
   @doc false
   def changeset(training, attrs) do
     training
-    |> cast(attrs, [:title, :expect, :current])
+    |> cast(attrs, [:title, :expect, :current, :calendar_id])
     |> validate_required([:title, :expect, :current])
   end
 end

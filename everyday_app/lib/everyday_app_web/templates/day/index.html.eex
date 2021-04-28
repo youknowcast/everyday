@@ -1,7 +1,5 @@
 <div>
   <%= for u  <- @users do %>
-    <button>
-      <%= u.name %>
-    </button>
+    <%= link u.name, to: Routes.day_path(@conn, :index) %>
   <% end %>
 </div>

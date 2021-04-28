@@ -26,9 +26,17 @@ defmodule EverydayAppWeb.DayController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    day = Everyday.get_day!(id)
+  def show(conn, %{"user_id" => user_id, "calendar_id" => calendar_id}) do
+    day = Everyday.get_day!(user_id)
     render(conn, "show.html", day: day)
+  end
+
+  def show_today(conn, %{"user_id" => user_id}) do
+    today = Everyday.get_today
+    show(conn, %{
+      "user_id" => user_id,
+      "calendar_id" => ""
+    })
   end
 
   def edit(conn, %{"id" => id}) do

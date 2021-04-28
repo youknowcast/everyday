@@ -9,12 +9,12 @@ defmodule EverydayApp.Everyday do
   alias EverydayApp.User
 
   @doc """
-  Returns the list of day.
+  Returns the list of users.
 
   ## Examples
 
-      iex> list_day()
-      [%Day{}, ...]
+      iex> list_users()
+      [%User{}, ...]
 
   """
   def list_user do

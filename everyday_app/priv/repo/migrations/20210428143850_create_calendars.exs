@@ -2,10 +2,9 @@ defmodule EverydayApp.Repo.Migrations.CreateCalendar do
   use Ecto.Migration
 
   def change do
-    create table(:calendar) do
+    create table(:calendars) do
       add :cal_date, :date
       add :user_id, :integer
-      add :training_id, :integer
 
       timestamps()
     end

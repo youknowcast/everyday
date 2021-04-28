@@ -2,6 +2,6 @@ defmodule EverydayAppWeb.PageController do
   use EverydayAppWeb, :controller
 
   def index(conn, _params) do
-    render(conn, "index.html")
+    redirect(conn, to: "/day")
   end
 end
