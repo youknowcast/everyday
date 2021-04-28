@@ -2,11 +2,13 @@ defmodule EverydayApp.Training do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias EverydayApp.User
+
   schema "trainings" do
+    field :title, :string
     field :current, :integer
     field :expect, :integer
-    field :title, :string
-    belongs_to :calendar, Calendar, foreign_key: :calendar_id, references: :id
+    belongs_to :user, User, foreign_key: :user_id, references: :id
 
     timestamps()
   end

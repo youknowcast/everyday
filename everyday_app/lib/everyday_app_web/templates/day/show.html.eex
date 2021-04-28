@@ -1,0 +1,8 @@
+<h1>Show Day</h1>
+
+<ul>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.day_path(@conn, :edit, @day) %></span>
+<span><%= link "Back", to: Routes.day_path(@conn, :index) %></span>

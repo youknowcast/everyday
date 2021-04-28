@@ -5,6 +5,7 @@ defmodule EverydayApp.Repo.Migrations.CreateCalendar do
     create table(:calendar) do
       add :cal_date, :date
       add :user_id, :integer
+      add :training_id, :integer
 
       timestamps()
     end

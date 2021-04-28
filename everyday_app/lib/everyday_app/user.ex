@@ -2,6 +2,8 @@ defmodule EverydayApp.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias EverydayApp.Calendar
+
   schema "users" do
     field :name, :string
     field :active, :boolean

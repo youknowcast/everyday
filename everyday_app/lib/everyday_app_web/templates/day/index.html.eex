@@ -1,0 +1,7 @@
+<div>
+  <%= for u  <- @users do %>
+    <button>
+      <%= u.name %>
+    </button>
+  <% end %>
+</div>

@@ -17,6 +17,7 @@ defmodule EverydayAppWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/day", DayController, :index
   end
 
   # Other scopes may use custom stacks.

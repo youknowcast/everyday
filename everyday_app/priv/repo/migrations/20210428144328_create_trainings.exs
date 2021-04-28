@@ -6,7 +6,6 @@ defmodule EverydayApp.Repo.Migrations.CreateTrainings do
       add :title, :string
       add :expect, :integer
       add :current, :integer
-      add :calendar_id, :integer
 
       timestamps()
     end
