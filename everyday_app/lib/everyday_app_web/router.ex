@@ -18,8 +18,7 @@ defmodule EverydayAppWeb.Router do
 
     get "/", PageController, :index
     get "/day", DayController, :index
-    get "/day/:user_id", DayController, :show_today
-    get "/day/:user_id/:calendar_id", DayController, :show
+    get "/day/:user_id", DayController, :show
   end
 
   # Other scopes may use custom stacks.
