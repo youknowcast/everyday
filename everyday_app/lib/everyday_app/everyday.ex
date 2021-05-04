@@ -54,6 +54,10 @@ defmodule EverydayApp.Everyday do
     %{user: user}
   end
 
+  @spec _calendar(
+          %{:user => atom | %{:id => any, optional(any) => any}, optional(any) => any},
+          any
+        ) :: %{calendar: any, user: atom | %{:id => any, optional(any) => any}}
   def _calendar(%{user: user}, day) do
     cq = from c in Calendar,
           where: c.cal_date == ^day and c.user_id == ^user.id,
@@ -63,6 +67,14 @@ defmodule EverydayApp.Everyday do
     %{user: user, calendar: cal}
   end
 
+  @spec _trainings(
+          %{
+            :calendar => atom | %{:id => any, optional(any) => any},
+            :user => any,
+            optional(any) => any
+          },
+          any
+        ) :: %{calendar: atom | %{:id => any, optional(any) => any}, trainings: any, user: any}
   def _trainings(%{user: user, calendar: nil}, day) do
     {_ok, d} = Date.from_iso8601(day)
     cal_changeset = Calendar.changeset(%Calendar{}, %{
@@ -141,9 +153,32 @@ defmodule EverydayApp.Everyday do
       {:error, ...}
 
   """
-  def update_day(%Training{} = day, attrs) do
-    raise "TODO"
+  def do_training(training_id, content) do
+    q = from t in Training,
+          where: t.id == ^training_id
+    training = Repo.one(q)
+
+    new_content = _do_training(training, content)
+    case new_content do
+      nil ->
+        nil
+      changeset ->
+        Repo.update(changeset)
+    end
   end
+
+  def _do_training(t, %{increment: inc}) do
+    Training.changeset(t, %{current: t.current + inc})
+  end
+  def _do_training(t, %{decrement: dec}) do
+    case t.current - dec do
+      n when n < 0 ->
+        nil
+      _ ->
+        Training.changeset(t, %{current: t.current - 1})
+    end
+  end
+
 
   @doc """
   Deletes a Day.
@@ -157,8 +192,13 @@ defmodule EverydayApp.Everyday do
       {:error, ...}
 
   """
-  def delete_day(%Training{} = day) do
-    raise "TODO"
+  def delete_training(id) do
+    q = from t in Training,
+          where: t.id == ^id
+    training = Repo.one(q)
+    Repo.delete(training)
+
+    :ok
   end
 
   @doc """
