@@ -6,6 +6,7 @@ defmodule EverydayApp.Everyday do
   import Ecto.Query, warn: false
   alias EverydayApp.Repo
   alias EverydayApp.Training
+  alias EverydayApp.Calendar
   alias EverydayApp.User
 
   @doc """
@@ -33,7 +34,41 @@ defmodule EverydayApp.Everyday do
       %Day{}
 
   """
-  def get_day!(id), do: raise "TODO"
+  def get_trainings(user_id, day) do
+    uq = from u in User,
+              where: u.id == ^user_id,
+              select: [:id, :name]
+    user = Repo.one(uq)
+
+    cq = from c in Calendar,
+              where: c.cal_date == ^day and c.user_id == ^user.id,
+              select: [:id]
+    cal = Repo.one(cq)
+
+    trainings = _get_trainings(user, cal, day)
+
+    %{user: user, trainings: trainings}
+  end
+
+  def _get_trainings(user, nil, day) do
+    {_ok, d} = Date.from_iso8601(day)
+    cal_changeset = Calendar.changeset(%Calendar{}, %{
+      cal_date: d,
+      user_id: user.id
+    })
+    cal = Repo.insert!(cal_changeset)
+
+    tq = from t in Training,
+    where: t.calendar_id == ^cal.id
+    trainings = Repo.all(tq)
+    trainings
+  end
+  def _get_trainings(_, cal, _) do
+    tq = from t in Training,
+    where: t.calendar_id == ^cal.id
+    trainings = Repo.all(tq)
+    trainings
+  end
 
   @doc """
   Creates a day.

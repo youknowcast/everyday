@@ -6,7 +6,8 @@ defmodule EverydayAppWeb.DayController do
 
   def index(conn, _params) do
     users = Everyday.list_user
-    render(conn, "index.html", users: users)
+    day = Date.to_string(Date.utc_today)
+    render(conn, "index.html", users: users, day: day)
   end
 
   def new(conn, _params) do
@@ -26,17 +27,10 @@ defmodule EverydayAppWeb.DayController do
     end
   end
 
-  def show(conn, %{"user_id" => user_id, "calendar_id" => calendar_id}) do
-    day = Everyday.get_day!(user_id)
-    render(conn, "show.html", day: day)
-  end
+  def show(conn, %{"user_id" => user_id, "day" =>day}) do
+    %{user: user, trainings: trainings} = Everyday.get_trainings(user_id, day)
 
-  def show_today(conn, %{"user_id" => user_id}) do
-    today = Everyday.get_today
-    show(conn, %{
-      "user_id" => user_id,
-      "calendar_id" => ""
-    })
+    render(conn, "show.html", trainings: trainings, user: user)
   end
 
   def edit(conn, %{"id" => id}) do
