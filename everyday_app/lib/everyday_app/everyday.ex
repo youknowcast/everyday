@@ -35,7 +35,6 @@ defmodule EverydayApp.Everyday do
 
   """
   def get_trainings(user_id, day) do
-
     ret = user_id
     |> _user()
     |> _calendar(day)
@@ -137,8 +136,36 @@ defmodule EverydayApp.Everyday do
       {:error, ...}
 
   """
-  def create_day(attrs \\ %{}) do
-    raise "TODO"
+  def copy_trainings(user_id, day) do
+    user_and_cal = user_id
+    |> _user()
+    |> _calendar(day)
+
+    user_and_cal.user
+    |> _get_last_trainings
+    |> Enum.map(&(create_or_update_trainings(user_id, day, %{
+      id: nil,
+      title: &1.title,
+      expect: &1.expect,
+    })))
+  end
+
+  def _get_last_trainings(user) do
+    q = from t in Training,
+      inner_join: c in Calendar, on: t.calendar_id == c.id,
+      inner_join: u in User, on: c.user_id == u.id,
+      where: u.id == ^user.id and c.id in subquery(
+        # training をなにかしらもっている最新のもの(id はふつうに作っていたら日付順に並ぶであろう)を calendar から抽出する
+        from c2 in Calendar,
+          inner_join: u2 in User, on: c2.user_id == u2.id,
+          inner_join: t2 in Training, on: t2.calendar_id == c2.id,
+          where: u2.id == ^user.id,
+          order_by: [desc: :id],
+          limit: 1,
+          select: [:id]
+      )
+    trainings = Repo.all(q)
+    trainings
   end
 
   @doc """

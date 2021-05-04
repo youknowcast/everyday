@@ -1,4 +1,4 @@
-<h1>Show Day</h1>
+<h1><%= @user.name %> さんの今日やること</h1>
 
 <div>
   <%= for t  <- @trainings do %>
@@ -6,12 +6,15 @@
       <%= t.title %>
       <%= t.expect %>
       <%= t.current %>
-      <%= link "やりました", to: Routes.training_path(@conn, :update, t.id, increment: true, user: @user.id, day: @day), method: :put %>>
-      <%= link "もどします", to: Routes.training_path(@conn, :update, t.id, decrement: true, user: @user.id, day: @day), method: :put %>>
-      <%= link "けします", to: Routes.training_path(@conn, :delete, t.id, user: @user.id, day: @day), method: :delete %>>
+      <%= link "やりました", to: Routes.training_path(@conn, :update, t.id, increment: true, user: @user.id, day: @day), method: :put %>
+      <%= link "もどします", to: Routes.training_path(@conn, :update, t.id, decrement: true, user: @user.id, day: @day), method: :put %>
+      <%= link "けします", to: Routes.training_path(@conn, :delete, t.id, user: @user.id, day: @day), method: :delete %>
     </div>
   <% end %>
 </div>
 
 
+<%= if length(@trainings) == 0 do %>
+<%= link "まえのきろくをコピーします", to: Routes.day_path(@conn, :create, @user.id, day: @day), method: :create %>
+<% end %>
 <%= render "form.html", Map.put(assigns, :action, Routes.day_path(@conn, :update, @user.id, day: @day)) %>

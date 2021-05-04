@@ -9,12 +9,25 @@ defmodule EverydayAppWeb.DayController do
     render(conn, "index.html", users: users, day: day)
   end
 
-  def show(conn, %{"user_id" => user_id, "day" =>day}) do
+  def show(conn, %{"user_id" => user_id, "day" => day}) do
+    %{user: user, trainings: trainings} = Everyday.get_trainings(user_id, day)
+
+    render(conn, "show.html", trainings: trainings, user: user, day: day)
+  end
+  def show(conn, %{"user_id" => user_id}) do
+    day = Date.to_string(Date.utc_today)
     %{user: user, trainings: trainings} = Everyday.get_trainings(user_id, day)
 
     render(conn, "show.html", trainings: trainings, user: user, day: day)
   end
 
+  def create(conn, %{"user_id" => user_id, "day" => day}) do
+    Everyday.copy_trainings(user_id, day)
+
+    redirect(conn, to: "/day/#{user_id}?day=#{day}")
+  end
+
+  @spec update(Plug.Conn.t(), map) :: Plug.Conn.t()
   def update(conn, %{"user_id" => user_id, "day" => day,
                       "title" => title, "expect" => expect}) do
 
