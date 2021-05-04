@@ -1,4 +1,4 @@
-<h1><%= @user.name %> さんの今日やること</h1>
+<h1><%= @user.name %> さんの <%= @day %> にやること</h1>
 
 <div>
   <%= for t  <- @trainings do %>
@@ -17,4 +17,5 @@
 <%= if length(@trainings) == 0 do %>
 <%= link "まえのきろくをコピーします", to: Routes.day_path(@conn, :create, @user.id, day: @day), method: :create %>
 <% end %>
+<%= link "はじめにもどります", to: Routes.day_path(@conn, :index) %>
 <%= render "form.html", Map.put(assigns, :action, Routes.day_path(@conn, :update, @user.id, day: @day)) %>
