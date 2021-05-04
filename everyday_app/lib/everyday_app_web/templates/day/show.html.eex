@@ -11,6 +11,4 @@
 </div>
 
 
-<ul>
-
-</ul>
+<%= render "form.html", Map.put(assigns, :action, Routes.day_path(@conn, :update, @user.id, day: @day)) %>

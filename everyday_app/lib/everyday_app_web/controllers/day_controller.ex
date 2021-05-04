@@ -30,7 +30,7 @@ defmodule EverydayAppWeb.DayController do
   def show(conn, %{"user_id" => user_id, "day" =>day}) do
     %{user: user, trainings: trainings} = Everyday.get_trainings(user_id, day)
 
-    render(conn, "show.html", trainings: trainings, user: user)
+    render(conn, "show.html", trainings: trainings, user: user, day: day)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -39,18 +39,12 @@ defmodule EverydayAppWeb.DayController do
     render(conn, "edit.html", day: day, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "day" => day_params}) do
-    day = Everyday.get_day!(id)
+  def update(conn, %{"user_id" => user_id, "day" => day,
+                      "title" => title, "expect" => expect}) do
 
-    case Everyday.update_day(day, day_params) do
-      {:ok, day} ->
-        conn
-        |> put_flash(:info, "Day updated successfully.")
-        |> redirect(to: Routes.day_path(conn, :show, day))
+    Everyday.create_or_update_trainings(user_id, day, %{id: nil, title: title, expect: expect})
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", day: day, changeset: changeset)
-    end
+    redirect(conn, to: "/day/#{user_id}?day=#{day}")
   end
 
   def delete(conn, %{"id" => id}) do

@@ -35,22 +35,35 @@ defmodule EverydayApp.Everyday do
 
   """
   def get_trainings(user_id, day) do
-    uq = from u in User,
-              where: u.id == ^user_id,
-              select: [:id, :name]
-    user = Repo.one(uq)
 
-    cq = from c in Calendar,
-              where: c.cal_date == ^day and c.user_id == ^user.id,
-              select: [:id]
-    cal = Repo.one(cq)
+    ret = user_id
+    |> _user()
+    |> _calendar(day)
+    |> _trainings(day)
 
-    trainings = _get_trainings(user, cal, day)
-
-    %{user: user, trainings: trainings}
+    # %{user: user, calendar: calendar, trainings: traininings}
+    ret
   end
 
-  def _get_trainings(user, nil, day) do
+  def _user(user_id) do
+    uq = from u in User,
+          where: u.id == ^user_id,
+          select: [:id, :name]
+    user = Repo.one(uq)
+
+    %{user: user}
+  end
+
+  def _calendar(%{user: user}, day) do
+    cq = from c in Calendar,
+          where: c.cal_date == ^day and c.user_id == ^user.id,
+          select: [:id]
+    cal = Repo.one(cq)
+
+    %{user: user, calendar: cal}
+  end
+
+  def _trainings(%{user: user, calendar: nil}, day) do
     {_ok, d} = Date.from_iso8601(day)
     cal_changeset = Calendar.changeset(%Calendar{}, %{
       cal_date: d,
@@ -61,13 +74,43 @@ defmodule EverydayApp.Everyday do
     tq = from t in Training,
     where: t.calendar_id == ^cal.id
     trainings = Repo.all(tq)
-    trainings
+
+    %{user: user, calendar: cal, trainings: trainings}
   end
-  def _get_trainings(_, cal, _) do
+  def _trainings(%{user: user, calendar: cal}, _) do
     tq = from t in Training,
     where: t.calendar_id == ^cal.id
     trainings = Repo.all(tq)
-    trainings
+
+    %{user: user, calendar: cal, trainings: trainings}
+  end
+
+  @spec create_or_update_trainings(
+          any,
+          any,
+          :invalid | %{:id => any, optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: any
+  def create_or_update_trainings(user_id, day, changeset) do
+
+    %{user: _user, calendar: cal, trainings: trainings} = user_id
+    |> _user()
+    |> _calendar(day)
+    |> _trainings(day)
+
+    case changeset.id do
+      nil ->
+        t = Training.changeset(%Training{
+          current: 0,
+          calendar_id: cal.id
+        }, changeset)
+        Repo.insert!(t)
+
+      training_id ->
+        current = Enum.find(trainings, &(&1.id == training_id))
+
+        future = Training.changeset(current, changeset)
+        Repo.update!(future)
+    end
   end
 
   @doc """
