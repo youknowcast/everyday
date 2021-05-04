@@ -3,6 +3,7 @@ defmodule EverydayAppWeb.TrainingController do
 
   alias EverydayApp.Everyday
 
+  @spec update(Plug.Conn.t(), map) :: Plug.Conn.t()
   def update(conn, %{"id" => id, "increment" => _increment, "user" =>  user_id, "day" => day}) do
     Everyday.do_training(id, %{increment: 1})
 
@@ -17,6 +18,7 @@ defmodule EverydayAppWeb.TrainingController do
   end
 
 
+  @spec delete(Plug.Conn.t(), map) :: Plug.Conn.t()
   def delete(conn, %{"id" => id, "user" => user_id, "day" => day}) do
     :ok = Everyday.delete_training(id)
 

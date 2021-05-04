@@ -1,5 +1,0 @@
-<h1>Edit Day</h1>
-
-<%= render "form.html", Map.put(assigns, :action, Routes.day_path(@conn, :update, @day)) %>
-
-<span><%= link "Back", to: Routes.day_path(@conn, :index) %></span>

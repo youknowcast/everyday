@@ -24,13 +24,11 @@ defmodule EverydayApp.Everyday do
   end
 
   @doc """
-  Gets a single day.
-
-  Raises if the Day does not exist.
+  Gets trainings by user and day.
 
   ## Examples
 
-      iex> get_day!(123)
+      iex> get_trainings(123)
       %Day{}
 
   """
@@ -44,7 +42,8 @@ defmodule EverydayApp.Everyday do
     ret
   end
 
-  def _user(user_id) do
+  @spec _user(any) :: %{user: any}
+  defp _user(user_id) do
     uq = from u in User,
           where: u.id == ^user_id,
           select: [:id, :name]
@@ -57,7 +56,7 @@ defmodule EverydayApp.Everyday do
           %{:user => atom | %{:id => any, optional(any) => any}, optional(any) => any},
           any
         ) :: %{calendar: any, user: atom | %{:id => any, optional(any) => any}}
-  def _calendar(%{user: user}, day) do
+  defp _calendar(%{user: user}, day) do
     cq = from c in Calendar,
           where: c.cal_date == ^day and c.user_id == ^user.id,
           select: [:id]
@@ -74,7 +73,7 @@ defmodule EverydayApp.Everyday do
           },
           any
         ) :: %{calendar: atom | %{:id => any, optional(any) => any}, trainings: any, user: any}
-  def _trainings(%{user: user, calendar: nil}, day) do
+  defp _trainings(%{user: user, calendar: nil}, day) do
     {_ok, d} = Date.from_iso8601(day)
     cal_changeset = Calendar.changeset(%Calendar{}, %{
       cal_date: d,
@@ -88,7 +87,7 @@ defmodule EverydayApp.Everyday do
 
     %{user: user, calendar: cal, trainings: trainings}
   end
-  def _trainings(%{user: user, calendar: cal}, _) do
+  defp _trainings(%{user: user, calendar: cal}, _) do
     tq = from t in Training,
     where: t.calendar_id == ^cal.id
     trainings = Repo.all(tq)
@@ -96,6 +95,14 @@ defmodule EverydayApp.Everyday do
     %{user: user, calendar: cal, trainings: trainings}
   end
 
+  @doc """
+  Creates or Updates trainings.
+
+    ## Examples
+
+      iex> create_or_update_trainings(123, "2021-05-05", %{id: 1, ...})
+
+  """
   @spec create_or_update_trainings(
           any,
           any,
@@ -125,15 +132,11 @@ defmodule EverydayApp.Everyday do
   end
 
   @doc """
-  Creates a day.
+  Copys trainings that is related to other day to the day specified with `day`.
 
   ## Examples
 
-      iex> create_day(%{field: value})
-      {:ok, %Day{}}
-
-      iex> create_day(%{field: bad_value})
-      {:error, ...}
+      iex> copy_trainings(123, "2021-05-05")
 
   """
   def copy_trainings(user_id, day) do
@@ -150,7 +153,7 @@ defmodule EverydayApp.Everyday do
     })))
   end
 
-  def _get_last_trainings(user) do
+  defp _get_last_trainings(user) do
     q = from t in Training,
       inner_join: c in Calendar, on: t.calendar_id == c.id,
       inner_join: u in User, on: c.user_id == u.id,
@@ -169,15 +172,11 @@ defmodule EverydayApp.Everyday do
   end
 
   @doc """
-  Updates a day.
+  Updates a training.
 
   ## Examples
 
-      iex> update_day(day, %{field: new_value})
-      {:ok, %Day{}}
-
-      iex> update_day(day, %{field: bad_value})
-      {:error, ...}
+      iex> do_training(456, %{increment: 4})
 
   """
   def do_training(training_id, content) do
@@ -194,10 +193,10 @@ defmodule EverydayApp.Everyday do
     end
   end
 
-  def _do_training(t, %{increment: inc}) do
+  defp _do_training(t, %{increment: inc}) do
     Training.changeset(t, %{current: t.current + inc})
   end
-  def _do_training(t, %{decrement: dec}) do
+  defp _do_training(t, %{decrement: dec}) do
     case t.current - dec do
       n when n < 0 ->
         nil
@@ -206,17 +205,12 @@ defmodule EverydayApp.Everyday do
     end
   end
 
-
   @doc """
-  Deletes a Day.
+  Deletes a training.
 
   ## Examples
 
-      iex> delete_day(day)
-      {:ok, %Day{}}
-
-      iex> delete_day(day)
-      {:error, ...}
+      iex> delete_training(123)
 
   """
   def delete_training(id) do
@@ -224,20 +218,5 @@ defmodule EverydayApp.Everyday do
           where: t.id == ^id
     training = Repo.one(q)
     Repo.delete(training)
-
-    :ok
-  end
-
-  @doc """
-  Returns a data structure for tracking day changes.
-
-  ## Examples
-
-      iex> change_day(day)
-      %Todo{...}
-
-  """
-  def change_day(%Training{} = day, _attrs \\ %{}) do
-    raise "TODO"
   end
 end
