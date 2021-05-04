@@ -7,6 +7,9 @@ defmodule EverydayAppWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :basic_auth,
+      username: Application.get_env(:everyday_app, :basic_auth)[:username],
+      password: Application.get_env(:everyday_app, :basic_auth)[:password]
   end
 
   pipeline :api do
