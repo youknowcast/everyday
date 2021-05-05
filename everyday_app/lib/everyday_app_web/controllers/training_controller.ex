@@ -20,7 +20,7 @@ defmodule EverydayAppWeb.TrainingController do
 
   @spec delete(Plug.Conn.t(), map) :: Plug.Conn.t()
   def delete(conn, %{"id" => id, "user" => user_id, "day" => day}) do
-    :ok = Everyday.delete_training(id)
+    Everyday.delete_training(id)
 
     conn
     |> redirect(to: Routes.day_path(conn, :show, user_id, day: day))

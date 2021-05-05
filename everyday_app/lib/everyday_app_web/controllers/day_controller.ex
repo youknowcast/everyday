@@ -38,6 +38,12 @@ defmodule EverydayAppWeb.DayController do
   def update(conn, %{"user_id" => user_id, "day" => day,
                       "title" => title, "expect" => expect}) do
 
+    if title == "" || expect == "" do
+      conn
+      |> put_flash(:error, "やることのなまえともくひょうかいすうをいれてね")
+      |> redirect(to: "/day/#{user_id}?day=#{day}")
+    end
+
     Everyday.create_or_update_trainings(user_id, day, %{id: nil, title: title, expect: expect})
 
     redirect(conn, to: "/day/#{user_id}?day=#{day}")

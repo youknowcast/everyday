@@ -82,14 +82,16 @@ defmodule EverydayApp.Everyday do
     cal = Repo.insert!(cal_changeset)
 
     tq = from t in Training,
-    where: t.calendar_id == ^cal.id
+          where: t.calendar_id == ^cal.id,
+          order_by: :id
     trainings = Repo.all(tq)
 
     %{user: user, calendar: cal, trainings: trainings}
   end
   defp _trainings(%{user: user, calendar: cal}, _) do
     tq = from t in Training,
-    where: t.calendar_id == ^cal.id
+          where: t.calendar_id == ^cal.id,
+          order_by: :id
     trainings = Repo.all(tq)
 
     %{user: user, calendar: cal, trainings: trainings}
