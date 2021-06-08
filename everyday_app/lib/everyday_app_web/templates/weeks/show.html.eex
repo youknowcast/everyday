@@ -1,0 +1,7 @@
+<h1>Show Week</h1>
+
+<ul>
+
+</ul>
+
+<span><%= link "はじめにもどります", to: Routes.day_path(@conn, :index) %></span>
