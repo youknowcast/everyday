@@ -2,12 +2,12 @@ use Mix.Config
 
 # Configure your database
 config :everyday_app, EverydayApp.Repo,
-  username: "postgres",
-  password: "password",
-  database: "everyday",
-  hostname: "127.0.0.1",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  adapter: Ecto.Adapters.MyXQL,
+  username: "root",
+  password: "",
+  hostname: "mysql",
+  port: 3306,
+  database: "everyday_development"
 
 # For development, we disable any cache and enable
 # debugging and code reloading.

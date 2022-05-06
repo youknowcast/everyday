@@ -1,24 +1,30 @@
 version: '3'
  
 services:
-  postgres:
-    image: postgres:latest
-    restart: always
+  app:
+    build:
+      context: .
+    command: mix phx.server
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      PGPASSWORD: password
-      POSTGRES_DB: everyday
+      DB_HOST: mysql
+    links:
+      - mysql
     ports:
-      - 5432:5432
- 
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: always
-    ports:
-      - 81:80
+      - 4000:4000
+    volumes:
+      - ./everyday_app:/app
+    working_dir: /app
+    tty: true
+    stdin_open: true
+
+  mysql:
+    platform: linux/x86_64
+    image: ${DOCKER_MYSQL_IMAGE:-mysql:5.7.28}
     environment:
-      PGADMIN_DEFAULT_EMAIL: root@example.com
-      PGADMIN_DEFAULT_PASSWORD: password
-    depends_on:
-      - postgres
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - '23306:3306'
+volumes:
+  mysql:

@@ -36,7 +36,7 @@ defmodule EverydayApp.MixProject do
       {:phoenix, "~> 1.5.6"},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
-      {:postgrex, ">= 0.0.0"},
+                  {:myxql, "~> 0.6.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.3 or ~> 0.2.9"},
