@@ -1,0 +1,5 @@
+<footer>
+    <div>
+        <%= link "今週", to: Routes.weeks_path(@conn, :index, day: Date.to_string(Date.utc_today)) %>
+    </div>
+</footer>

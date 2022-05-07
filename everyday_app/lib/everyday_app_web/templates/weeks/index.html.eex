@@ -21,9 +21,9 @@
     </table>
 </div>
 
-<footer>
+<div>
     <div>
         <%= link "前週", to: Routes.weeks_path(@conn, :index, day: Date.to_string(Date.add(List.first(@week), -1))) %>
         <%= link "翌週", to: Routes.weeks_path(@conn, :index, day: Date.to_string(Date.add(List.last(@week), 1))) %>
     </div>
-</footer>
+</div>
