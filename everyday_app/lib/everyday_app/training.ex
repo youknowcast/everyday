@@ -1,4 +1,8 @@
 defmodule EverydayApp.Training do
+  @moduledoc """
+  Training
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

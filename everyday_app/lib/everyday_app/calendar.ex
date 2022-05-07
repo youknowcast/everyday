@@ -1,4 +1,8 @@
 defmodule EverydayApp.Calendar do
+  @moduledoc """
+  Calendar
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

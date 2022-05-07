@@ -59,33 +59,19 @@ defmodule EverydayApp.Everyday do
   defp _calendar(%{user: user}, day) do
     cq = from c in Calendar,
           where: c.cal_date == ^day and c.user_id == ^user.id,
-          select: [:id]
+          select: [:id, :cal_date]
     cal = Repo.one(cq)
 
     %{user: user, calendar: cal}
   end
 
-  defp _calendars(%{user: user}, day) do
-    date_arr = [
-      day,
-      Date.add(day, 1),
-      Date.add(day, 2),
-      Date.add(day, 3),
-      Date.add(day, 4),
-      Date.add(day, 5),
-      Date.add(day, 6),
-    ]
-    cq = from c in Calendar,
-          where: c.cal_date in ^date_arr and c.user_id == ^user.id,
-          select: [:id]
-    cals = Repo.one(cq)
-    %{user: user, calendar: cals}
-  end
-
   defp _trainings(%{user: user, calendar: nil}, day) do
-    {_ok, d} = Date.from_iso8601(day)
+    if String.valid?(day) do
+      day = Date.from_iso8601(day)
+    end
+
     cal_changeset = Calendar.changeset(%Calendar{}, %{
-      cal_date: d,
+      cal_date: day,
       user_id: user.id
     })
     cal = Repo.insert!(cal_changeset)
@@ -95,15 +81,15 @@ defmodule EverydayApp.Everyday do
           order_by: :id
     trainings = Repo.all(tq)
 
-    %{user: user, calendar: [cal], trainings: trainings}
+    %{user: user, calendar: cal, trainings: trainings}
   end
-  defp _trainings(%{user: user, calendar: cals}, _) do
+  defp _trainings(%{user: user, calendar: cal}, _) do
     tq = from t in Training,
-          where: t.calendar_id == ^cals.id,
+          where: t.calendar_id == ^cal.id,
           order_by: :id
     trainings = Repo.all(tq)
 
-    %{user: user, calendar: cals, trainings: trainings}
+    %{user: user, calendar: cal, trainings: trainings}
   end
 
   @doc """
@@ -249,10 +235,14 @@ defmodule EverydayApp.Everyday do
       %Weeks{}
 
   """
-  def get_week!(day_of_mon) do
+  def get_week(day_of_mon) do
+    _week = fn(d) ->
+      [d, Date.add(d, 1), Date.add(d, 2), Date.add(d, 3), Date.add(d, 4), Date.add(d, 5), Date.add(d, 6)]
+    end
     case day_of_mon do
-      nil -> raise "invalid date"
-      date -> []
+      nil -> _week.(Date.utc_today |> Date.beginning_of_week)
+      :error -> :error
+      date -> _week.(date)
     end
   end
 end

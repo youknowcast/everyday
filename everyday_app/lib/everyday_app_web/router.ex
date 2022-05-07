@@ -22,11 +22,12 @@ defmodule EverydayAppWeb.Router do
     get "/", PageController, :index
     get "/day", DayController, :index
     get "/day/:user_id", DayController, :show
-    get "/week/:day", WeeksController, :show
+    get "/week/", WeeksController, :index
+    get "/week/:user_id", WeeksController, :show
     put "/day/:user_id", DayController, :update
-    post "/day/:user_id/create", DayController, :create
+    get "/day/:user_id/create", DayController, :create
 
-    put "/training/:id", TrainingController, :update
+    get "/training/:id", TrainingController, :update
     delete "/training/:id", TrainingController, :delete
   end
 

@@ -1,4 +1,9 @@
 defmodule EverydayAppWeb.Telemetry do
+  @moduledoc """
+  TBD
+  """
+
+
   use Supervisor
   import Telemetry.Metrics
 
