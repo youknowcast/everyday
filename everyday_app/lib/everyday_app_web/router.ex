@@ -19,11 +19,11 @@ defmodule EverydayAppWeb.Router do
   scope "/", EverydayAppWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    get "/day", DayController, :index
-    get "/day/:user_id", DayController, :show
+    get "/", WeeksController, :index
     get "/week/", WeeksController, :index
     get "/week/:user_id", WeeksController, :show
+    get "/day", DayController, :index
+    get "/day/:user_id", DayController, :show
     put "/day/:user_id", DayController, :update
     get "/day/:user_id/create", DayController, :create
 

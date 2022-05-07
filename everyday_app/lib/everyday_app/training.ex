@@ -12,6 +12,7 @@ defmodule EverydayApp.Training do
     field :title, :string
     field :current, :integer
     field :expect, :integer
+    field :skip, :boolean
     belongs_to :calendar, Calendar, foreign_key: :calendar_id, references: :id
 
     timestamps()
