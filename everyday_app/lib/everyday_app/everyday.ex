@@ -225,24 +225,25 @@ defmodule EverydayApp.Everyday do
   end
 
   @doc """
-  Gets a single weeks.
-
-  Raises if the Weeks does not exist.
+  Gets a single week.
 
   ## Examples
 
-      iex> get_weeks!(123)
-      %Weeks{}
+      iex> get_week(nil)
+      [~D[2022-05-02], ~D[2022-05-03], ..., ~D[2022-05-08]]
+
+      iex> get_week(~D[2022-05-07])
+      [~D[2022-05-02], ~D[2022-05-03], ..., ~D[2022-05-08]]
 
   """
-  def get_week(day_of_mon) do
-    _week = fn(d) ->
-      [d, Date.add(d, 1), Date.add(d, 2), Date.add(d, 3), Date.add(d, 4), Date.add(d, 5), Date.add(d, 6)]
-    end
-    case day_of_mon do
-      nil -> _week.(Date.utc_today |> Date.beginning_of_week)
+  def get_week(day) do
+    _beginning_of_week = fn(d) -> Date.beginning_of_week(d) end
+    _week = fn(d) -> [d, Date.add(d, 1), Date.add(d, 2), Date.add(d, 3), Date.add(d, 4), Date.add(d, 5), Date.add(d, 6)] end
+
+    case day do
+      nil -> _week.(_beginning_of_week.(Date.utc_today))
       :error -> :error
-      date -> _week.(date)
+      d -> _week.(_beginning_of_week.(d))
     end
   end
 end

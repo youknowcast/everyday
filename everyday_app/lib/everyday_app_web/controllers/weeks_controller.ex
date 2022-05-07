@@ -4,6 +4,11 @@ defmodule EverydayAppWeb.WeeksController do
   alias EverydayApp.Everyday
   alias EverydayApp.Everyday.Weeks
 
+  def index(conn, %{"day" => day}) do
+    {:ok, _day} = Date.from_iso8601(day)
+    conn
+    |> render("index.html", %{users: Everyday.list_user, week: Everyday.get_week(_day)})
+  end
   def index(conn, _params) do
     conn
     |> render("index.html", %{users: Everyday.list_user, week: Everyday.get_week(nil)})
