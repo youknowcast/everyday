@@ -1,7 +1,11 @@
 <%= form_for @conn, @action, [method: "put"], fn f -> %>
   <div>
-    <%= text_input f, :title %>
-    <%= number_input f, :expect %>
+    <label>
+       やること: <%= text_input f, :title %>
+    </label>
+    <label>
+      かいすう: <%= number_input f, :expect %>
+    </label>
     <%= submit "Save" %>
   </div>
 <% end %>

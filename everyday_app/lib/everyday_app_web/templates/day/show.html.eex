@@ -4,9 +4,9 @@
   <%= for t  <- @trainings do %>
     <div>
       <%= t.title %>
-      <%= t.expect %>
-      <%= t.current %>
-      <%= t.skip %>
+      (もくひょう <%= t.expect %> かい /
+      げんざい <%= t.current %> かい)
+      <%= #t.skip %>
       <%= link "やりました", to: Routes.training_path(@conn, :update, t.id, increment: true, user: @user.id, day: day_to_s(@day)), method: :put %>
       <%= link "もどします", to: Routes.training_path(@conn, :update, t.id, decrement: true, user: @user.id, day: day_to_s(@day)), method: :put %>
       <%= link "けします", to: Routes.training_path(@conn, :delete, t.id, user: @user.id, day: day_to_s(@day)), method: :delete %>
