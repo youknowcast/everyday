@@ -16,6 +16,7 @@ defmodule EverydayAppWeb do
   below. Instead, define any helper function in modules
   and import those modules here.
   """
+  import Config
 
   def controller do
     quote do

@@ -8,6 +8,9 @@
 import Config
 
 config :everyday_app,
+  env: config_env()
+
+config :everyday_app,
   ecto_repos: [EverydayApp.Repo]
 
 # Configures the endpoint
