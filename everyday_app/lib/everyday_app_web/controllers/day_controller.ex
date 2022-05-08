@@ -6,25 +6,26 @@ defmodule EverydayAppWeb.DayController do
   @spec index(Plug.Conn.t(), any) :: Plug.Conn.t()
   def index(conn, _params) do
     users = Everyday.list_user
-    day = Date.to_string(Date.utc_today)
+    _day = Date.utc_today
 
     conn
-    |> render("index.html", users: users, day: day)
+    |> render("index.html", users: users, day: _day)
   end
 
   @spec show(Plug.Conn.t(), map) :: Plug.Conn.t()
   def show(conn, %{"user_id" => user_id, "day" => day}) do
-    %{user: user, trainings: trainings} = Everyday.get_trainings(user_id, day)
+    {:ok, _day} = Date.from_iso8601(day)
+    %{user: user, trainings: trainings} = Everyday.get_trainings(user_id, _day)
 
     conn
-    |> render("show.html", trainings: trainings, user: user, day: day)
+    |> render("show.html", trainings: trainings, user: user, day: _day)
   end
   def show(conn, %{"user_id" => user_id}) do
-    day = Date.to_string(Date.utc_today)
-    %{user: user, trainings: trainings} = Everyday.get_trainings(user_id, day)
+    _day = Date.utc_today
+    %{user: user, trainings: trainings} = Everyday.get_trainings(user_id, _day)
 
     conn
-    |> render("show.html", trainings: trainings, user: user, day: day)
+    |> render("show.html", trainings: trainings, user: user, day: _day)
   end
 
   @spec create(Plug.Conn.t(), map) :: Plug.Conn.t()

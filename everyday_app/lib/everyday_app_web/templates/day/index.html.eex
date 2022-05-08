@@ -1,6 +1,6 @@
 <div>
   <%= @day %>
   <%= for u  <- @users do %>
-    <%= link u.name, to: Routes.day_path(@conn, :show, u.id, day: @day) %>
+    <%= link u.name, to: Routes.day_path(@conn, :show, u.id, day: day_to_s(@day)) %>
   <% end %>
 </div>

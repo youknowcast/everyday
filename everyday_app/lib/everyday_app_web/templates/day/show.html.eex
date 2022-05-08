@@ -7,16 +7,19 @@
       <%= t.expect %>
       <%= t.current %>
       <%= t.skip %>
-      <%= link "やりました", to: Routes.training_path(@conn, :update, t.id, increment: true, user: @user.id, day: @day), method: :put %>
-      <%= link "もどします", to: Routes.training_path(@conn, :update, t.id, decrement: true, user: @user.id, day: @day), method: :put %>
-      <%= link "けします", to: Routes.training_path(@conn, :delete, t.id, user: @user.id, day: @day), method: :delete %>
+      <%= link "やりました", to: Routes.training_path(@conn, :update, t.id, increment: true, user: @user.id, day: day_to_s(@day)), method: :put %>
+      <%= link "もどします", to: Routes.training_path(@conn, :update, t.id, decrement: true, user: @user.id, day: day_to_s(@day)), method: :put %>
+      <%= link "けします", to: Routes.training_path(@conn, :delete, t.id, user: @user.id, day: day_to_s(@day)), method: :delete %>
     </div>
   <% end %>
 </div>
 
 
 <%= if length(@trainings) == 0 do %>
-<%= link "まえのきろくをコピーします", to: Routes.day_path(@conn, :create, @user.id, day: @day), method: :create %>
+<%= link "まえのきろくをコピーします", to: Routes.day_path(@conn, :create, @user.id, day: day_to_s(@day)), method: :create %>
 <% end %>
-<%= link "はじめにもどります", to: Routes.day_path(@conn, :index) %>
-<%= render "form.html", Map.put(assigns, :action, Routes.day_path(@conn, :update, @user.id, day: @day)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.day_path(@conn, :update, @user.id, day: day_to_s(@day))) %>
+<div>
+    <%= link "きょうのみんなの予定", to: Routes.day_path(@conn, :index) %>
+    <%= link "あしたの #{@user.name} さんの予定", to: Routes.day_path(@conn, :show, @user.id, day: day_to_s(Date.add(@day, 1))) %>
+</div>
