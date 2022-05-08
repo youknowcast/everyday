@@ -1,5 +1,13 @@
 # everyday
 
+## requirements
+
+TBD
+
+* elixir
+* docker-compose
+* yarn
+
 ## setup
 
 build phoenix app
@@ -7,6 +15,16 @@ build phoenix app
 ```
 % cd everyday_app
 % mix deps.get, compile
+```
+
+build javascript
+
+```
+% cd assets
+% yarn
+
+# when development
+% yarn run watch
 ```
 
 then, docker-compose at project root dir.
