@@ -151,19 +151,19 @@ defmodule EverydayApp.Everyday do
   end
 
   defp _get_last_trainings(user) do
+    last_cal_q = from c in Calendar,
+                 inner_join: u in User, on: c.user_id == u.id,
+                 inner_join: t in Training, on: t.calendar_id == c.id,
+                 where: u.id == ^user.id,
+                 order_by: [desc: :cal_date],
+                 limit: 1,
+                 select: [:id]
+    last_cal = Repo.one(last_cal_q)
+
     q = from t in Training,
       inner_join: c in Calendar, on: t.calendar_id == c.id,
       inner_join: u in User, on: c.user_id == u.id,
-      where: u.id == ^user.id and c.id in subquery(
-        # training をなにかしらもっている最新のもの(id はふつうに作っていたら日付順に並ぶであろう)を calendar から抽出する
-        from c2 in Calendar,
-          inner_join: u2 in User, on: c2.user_id == u2.id,
-          inner_join: t2 in Training, on: t2.calendar_id == c2.id,
-          where: u2.id == ^user.id,
-          order_by: [desc: :id],
-          limit: 1,
-          select: [:id]
-      )
+      where: u.id == ^user.id and c.id == ^last_cal.id
     trainings = Repo.all(q)
     trainings
   end
